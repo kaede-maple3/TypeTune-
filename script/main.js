@@ -69,7 +69,7 @@ function Ready() {
                 ],
             }
             window.localStorage.setItem("highScore",JSON.stringify(highScoreData));
-        }else{
+        }else{//ハイスコアデータは存在しまぁす！
             highScoreData = JSON.parse(highScoreData);
         }
     }
