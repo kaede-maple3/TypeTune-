@@ -8,6 +8,7 @@ let tunesInfo = [
         "BPM":"BPM",
         "description":"説明",
         "scoreRate":{
+        "D":"Dランクの..."
             "C":"Cランクのスコア",
             "B":"B同上",
             "A":"A同上",
@@ -27,14 +28,9 @@ let tunesInfo = [
         "time": 94000,
         "BPM": 158,
         "credit": "作詞作曲：森田交一 ボーカル：詩歩 ベース＆ギター：森田交一",
-        "scoreRate": {
-            "D": "Dランクのスコア",
-            "C": "Cランクのスコア",
-            "B": "B同上",
-            "A": "A同上",
-            "AA": "AA同上",
-            "S": "S同上",
-        },
+        "scoreRate": [
+            0,60000,130000,210000,320000,450000
+        ],//
         "highScore": {
             "normal": 0,
             "hard": 0,

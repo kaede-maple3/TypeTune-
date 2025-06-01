@@ -23,24 +23,24 @@ function Init() {
         "Rampart One": "https://fonts.googleapis.com/css2?family=Rampart+One&display=swap",
         "Noto Serif": "https://fonts.googleapis.com/css2?family=Noto+Serif+JP&display=swap",
         "Martian Mono": "https://fonts.googleapis.com/css2?family=Martian+Mono&display=swap",
-        "Mochiy Pop One":"https://fonts.googleapis.com/css2?family=Mochiy+Pop+One&display=swap",
-        "WDXL Lubrifont TC":"https://fonts.googleapis.com/css2?family=WDXL+Lubrifont+TC&display=swap",
+        "Mochiy Pop One": "https://fonts.googleapis.com/css2?family=Mochiy+Pop+One&display=swap",
+        "WDXL Lubrifont TC": "https://fonts.googleapis.com/css2?family=WDXL+Lubrifont+TC&display=swap",
     });
     Fortis.ImageLoader.addImages({
         "bTuneSB": "./img/ui/bTuneSB.png",
         "nTuneSB": "./img/ui/nTuneSB.png",
         "gRArrow": "./img/ui/gRArrow.png",
-        "cb":"./img/notes/cb.png",
-        "cy":"./img/notes/cy.png",
-        "cg":"./img/notes/cg.png",
-        "sb":"./img/notes/sb.png",
-        "sy":"./img/notes/sy.png",
-        "sg":"./img/notes/sg.png",
+        "cb": "./img/notes/cb.png",
+        "cy": "./img/notes/cy.png",
+        "cg": "./img/notes/cg.png",
+        "sb": "./img/notes/sb.png",
+        "sy": "./img/notes/sy.png",
+        "sg": "./img/notes/sg.png",
     });
 
     Fortis.SoundLoader.addSimpleSounds({
-        "sss":"./tune/sss.wav",
-        "forElise":"./tune/forElise.wav",
+        "sss": "./tune/sss.wav",
+        "forElise": "./tune/forElise.wav",
     });
 
     Fortis.SoundLoader.addNormalSounds({
@@ -48,13 +48,37 @@ function Init() {
 }
 
 let nowScene;
+let localStorage;
+let highScoreData;
 
 function Ready() {
+    //ローカルストレージ確認
+    if (!window.localStorage) {
+        console.log("localstorage非対応");
+        localStorage = false;
+    } else {
+        localStorage = true;
+        highScoreData = window.localStorage.getItem("highScore");
+        if(highScoreData == null){//ハイスコアデータが存在しない
+            highScoreData = {
+                "sss":[
+                    0,0
+                ],
+                "forElise":[
+                    0,0
+                ],
+            }
+            window.localStorage.setItem("highScore",JSON.stringify(highScoreData));
+        }else{
+            highScoreData = JSON.parse(highScoreData);
+        }
+    }
+
     //タイトル
-    
+
     nowScene = "title";
     title();
-    
+
 
     //曲セレクト
     /*

@@ -219,7 +219,7 @@ function sUpdate(delta) {
     mouseCG.pos = Fortis.Game.mouse.pos.copy();
 
     if (performance.now() - sLOSTime >= 1000) {
-        if(tuneSelected && sLoRect.alpha == 1){
+        if (tuneSelected && sLoRect.alpha == 1) {
             nowScene = "play";
             ResetToPlay();
         }
@@ -345,8 +345,8 @@ function changeDisplayedTune(index) {
 
     tuneTText.shape.text = "再生時間（秒）：" + tunesInfo[index]["time"] / 1000;
 
-    tuneNScore.shape.text;//ノーマル
-    tuneHScore.shape.text;//ハード
+    tuneNScore.shape.text = highScoreData[tunesInfo[index]["data"]][0].toString().padStart(7, '0');//ノーマル
+    tuneHScore.shape.text = highScoreData[tunesInfo[index]["data"]][1].toString().padStart(7, '0');//ハード
 
     sTuneTText.shape.text = "セレクト：" + (index + 1) + "/" + tunesInfo.length;
 }
@@ -376,7 +376,7 @@ function SelectedTune() {//曲が選択され、ゲーム開始を押された
     Fortis.TransitionManager.start(sLoID);
     tuneSelected = true;
     let colIDs = Fortis.CollisionManager.getID();
-    for(let id of colIDs){
+    for (let id of colIDs) {
         Fortis.CollisionManager.remove(id);
     }
 }

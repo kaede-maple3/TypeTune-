@@ -27,7 +27,7 @@ let nSTStartTime;//ノーツのタイマーが始まった時間
 let feverGauge;//フィーバーゲージ
 
 //終了時のあれこれ
-let alreadyFinished;//既にfinish関数を呼び出した
+let finished;//既にfinish関数を呼び出した
 let finishFadeId;//終了時のフェード
 let finishTimerId;//終了時のタイマー
 let fScore, fScoreFont;//最終的なスコア
@@ -35,6 +35,9 @@ let fRank, fRankFont;//最終的なランク
 let pScore, pScoreFont;//素点
 let cScore, cScoreFont;//コンボ加算スコア
 let feScore, feScoreFont;//フィーバー加算スコア
+let bBRect, bBText, bBTFont;//戻るボタン
+let bBColG, bBColRect;//戻るボタンの当たり判定
+let mAndBB;//マウスと戻るボタンの当たり判定
 
 //プレイに関するデータ
 let nowSound;
@@ -82,7 +85,7 @@ function ResetToPlay() {
     fever = 0;
     NDT = 1200;
     nSpeed = 1.2 * (Fortis.Game.canvasCfg.size.y / (NDT / 1000));
-    alreadyFinished = false;
+    finished = false;
     TPHB = Fortis.util.cleanFloat(60 * 1000 / tunesInfo[nowSTIndex]["BPM"] / 2, 5);
     score = {
         "normal": 300,
@@ -203,7 +206,7 @@ function ResetToPlay() {
         tRankTFont = new Fortis.Font("Yusei Magic", 55);
         tRankText = new Fortis.Entity(new Fortis.TextShape(tRankTFont, nowRank), new Fortis.ColorMaterial(new Fortis.Color("#C021E2")));
         tRankText.pos = new Fortis.Vector2(Fortis.Game.canvasCfg.size.x * 15 / 16, Fortis.Game.canvasCfg.size.y / 5);
-        rankChange(nowRank);
+        rankChange(nowScore,tRankText);
 
         ComboTFont = new Fortis.Font("WDXL Lubrifont TC", 20);
         ComboText = new Fortis.Entity(new Fortis.TextShape(ComboTFont, "combo"), new Fortis.ColorMaterial(new Fortis.Color("white")));
@@ -283,6 +286,19 @@ function ResetToPlay() {
 }
 
 function pUpdate(delta) {
+    if (finished) {
+        mouseCG.pos = Fortis.Game.mouse.pos.copy();
+        if (Fortis.CollisionManager.get(mAndBB)["result"]) {
+            if(Fortis.Game.mouse.fFrameatClick){
+                location.reload();
+            }
+            bBRect.scale = new Fortis.Vector2(1.2, 1.2);
+            bBText.scale = new Fortis.Vector2(1.2, 1.2);
+        }else{
+            bBRect.scale = new Fortis.Vector2(1, 1);
+            bBText.scale = new Fortis.Vector2(1, 1);
+        }
+    }
 
     if (nPlaying) {
         nowNTTime += delta;
@@ -300,8 +316,9 @@ function pUpdate(delta) {
 
         keyPush(delta, nowHBeats, nowBRTime);
 
-        if (nowSound.status && !alreadyFinished) {//曲終了
-            alreadyFinished = true;
+        if (nowSound.status) {//曲終了
+            nPlaying = false;
+            tPlaying = false;
             //console.log("finish");
             finishFadeId = Fortis.TransitionManager.add(fadeRect, "alpha", 2000, 0, 0.8, Fortis.util.easing.inPower, 2);
             Fortis.TransitionManager.start(finishFadeId);
@@ -309,26 +326,44 @@ function pUpdate(delta) {
             Fortis.Timer.start(finishTimerId);
         }
     }
+
+    
 }
 
-function rankChange(rank) {
-    tRankText.shape.text = rank;
+function rankChange(ns,target){
+    let sr = tunesInfo[nowSTIndex]["scoreRate"];
+    let rank;
+    if(sr[1]>=ns){
+        rank = "D";
+    }else if(sr[2]>=ns){
+        rank = "C";
+    }else if(sr[3]>=ns){
+        rank = "B";
+    }else if(sr[4]>=ns){
+        rank = "A";
+    }else if(sr[5]>=ns){
+        rank = "AA";
+    }else{
+        rank = "S";
+    }
+
+    target.shape.text = rank;
     switch (rank) {
         case "D":
-            tRankText.material.fill = new Fortis.Color("#C021E2");
+            target.material.fill = new Fortis.Color("#C021E2");
             break;
         case "C":
-            tRankText.material.fill = new Fortis.Color("#2181E2");
+            target.material.fill = new Fortis.Color("#2181E2");
             break;
         case "B":
-            tRankText.material.fill = new Fortis.Color("#21E22E");
+            target.material.fill = new Fortis.Color("#21E22E");
             break;
         case "AA":
         case "A":
-            tRankText.material.fill = new Fortis.Color("#F62222");
+            target.material.fill = new Fortis.Color("#F62222");
             break;
         case "S":
-            tRankText.material.fill = new Fortis.Color("#EBFE43");
+            target.material.fill = new Fortis.Color("#EBFE43");
             break;
     }
 }
@@ -727,6 +762,8 @@ function changeReactionAndScore(key, difference, type, length) {
 
     nowScore = Fortis.util.cleanFloat(nowScore, -2);
 
+    rankChange(nowScore,tRankText);
+
     tScoreText.shape.text = nowScore.toString().padStart(7, '0');
 }
 
@@ -747,34 +784,55 @@ function FeverGaugeChange() {
 }
 
 function finish() {
+    finished = true;
     let comboAdd = highCombo * 100;
     let feverAdd = nowScore * (fever / 250);
-    let finallyScore = nowScore + comboAdd + feverAdd;
+    let finalScore = nowScore + comboAdd + feverAdd;
+
+    //ハイスコアかの判定
+    if(highScoreData[tunesInfo[nowSTIndex]["data"]][nowSDifficulty]<finalScore){
+        highScoreData[tunesInfo[nowSTIndex]["data"]][nowSDifficulty] = finalScore;
+        window.localStorage.setItem("highScore",JSON.stringify(highScoreData));
+        confirm("おめでとう！端末のハイスコアを更新したよ！");
+    }
 
     //最終スコア
     fScoreFont = new Fortis.Font("Martian Mono", 60);
-    fScore = new Fortis.Entity(new Fortis.TextShape(fScoreFont, "合計："+finallyScore.toString().padStart(7, '0')), new Fortis.ColorMaterial(new Fortis.Color("white"))),
+    fScore = new Fortis.Entity(new Fortis.TextShape(fScoreFont, "合計：" + finalScore.toString().padStart(7, '0')), new Fortis.ColorMaterial(new Fortis.Color("white"))),
         fScore.pos = new Fortis.Vector2(Fortis.Game.canvasCfg.size.x / 2, Fortis.Game.canvasCfg.size.y * 2 / 3);
 
     //ランク
     fRankFont = new Fortis.Font("Yusei Magic", 90);
     fRank = new Fortis.Entity(new Fortis.TextShape(fRankFont, "D"), new Fortis.ColorMaterial(new Fortis.Color("white"))),
-        fRank.pos = new Fortis.Vector2(Fortis.Game.canvasCfg.size.x *9  / 10, Fortis.Game.canvasCfg.size.y * 2 / 3);
+        fRank.pos = new Fortis.Vector2(Fortis.Game.canvasCfg.size.x * 9 / 10, Fortis.Game.canvasCfg.size.y * 2 / 3);
+    rankChange(finalScore,fRank);
 
     //素点
     pScoreFont = new Fortis.Font("Martian Mono", 40);
-    pScore = new Fortis.Entity(new Fortis.TextShape(pScoreFont, "素点："+nowScore.toString().padStart(7, '0')), new Fortis.ColorMaterial(new Fortis.Color("white"))),
-    pScore.pos = new Fortis.Vector2(Fortis.Game.canvasCfg.size.x / 2, Fortis.Game.canvasCfg.size.y * 1 / 10);
+    pScore = new Fortis.Entity(new Fortis.TextShape(pScoreFont, "素点：" + nowScore.toString().padStart(7, '0')), new Fortis.ColorMaterial(new Fortis.Color("white"))),
+        pScore.pos = new Fortis.Vector2(Fortis.Game.canvasCfg.size.x / 2, Fortis.Game.canvasCfg.size.y * 1 / 10);
 
     //コンボ加算
     pScoreFont = new Fortis.Font("Martian Mono", 40);
-    cScore = new Fortis.Entity(new Fortis.TextShape(pScoreFont, "最高コンボ加算："+comboAdd.toString().padStart(7, '0')), new Fortis.ColorMaterial(new Fortis.Color("white"))),
-    cScore.pos = new Fortis.Vector2(Fortis.Game.canvasCfg.size.x / 2, Fortis.Game.canvasCfg.size.y *3 / 10);
+    cScore = new Fortis.Entity(new Fortis.TextShape(pScoreFont, "最高コンボ加算：" + comboAdd.toString().padStart(7, '0')), new Fortis.ColorMaterial(new Fortis.Color("white"))),
+        cScore.pos = new Fortis.Vector2(Fortis.Game.canvasCfg.size.x / 2, Fortis.Game.canvasCfg.size.y * 3 / 10);
 
     //フィーバー加算
     pScoreFont = new Fortis.Font("Martian Mono", 40);
-    feScore = new Fortis.Entity(new Fortis.TextShape(pScoreFont, "フィーバー加算："+feverAdd.toString().padStart(7, '0')), new Fortis.ColorMaterial(new Fortis.Color("white"))),
-    feScore.pos = new Fortis.Vector2(Fortis.Game.canvasCfg.size.x / 2, Fortis.Game.canvasCfg.size.y * 5 / 10);
+    feScore = new Fortis.Entity(new Fortis.TextShape(pScoreFont, "フィーバー加算：" + feverAdd.toString().padStart(7, '0')), new Fortis.ColorMaterial(new Fortis.Color("white"))),
+        feScore.pos = new Fortis.Vector2(Fortis.Game.canvasCfg.size.x / 2, Fortis.Game.canvasCfg.size.y * 5 / 10);
 
-    UILayer.addEntities([fScore,fRank,pScore,cScore,feScore])
+    //戻るボタン
+    bBRect = new Fortis.Entity(new Fortis.RectShape(Fortis.Game.canvasCfg.size.x / 8, Fortis.Game.canvasCfg.size.y / 18), new Fortis.ColorMaterial(new Fortis.Color("#252525")));
+    bBRect.pos = new Fortis.Vector2(Fortis.Game.canvasCfg.size.x / 2, Fortis.Game.canvasCfg.size.y * 5 / 6);
+    bBTFont = new Fortis.Font("Yusei Magic", 22);
+    bBText = new Fortis.Entity(new Fortis.TextShape(bBTFont, "戻る"), new Fortis.ColorMaterial(new Fortis.Color("white"))),
+        bBText.pos = new Fortis.Vector2(Fortis.Game.canvasCfg.size.x / 2, Fortis.Game.canvasCfg.size.y * 5 / 6);
+    bBColG = new Fortis.ColliderGroup();
+    bBColG.link(bBRect);
+    bBColRect = new Fortis.RectCollider(Fortis.Game.canvasCfg.size.x / 8, Fortis.Game.canvasCfg.size.y / 18);
+    bBColG.add(bBColRect);
+    mAndBB = Fortis.CollisionManager.add(mouseCG, bBColG);
+
+    UILayer.addEntities([fScore, fRank, pScore, cScore, feScore, bBRect, bBText]);
 }
