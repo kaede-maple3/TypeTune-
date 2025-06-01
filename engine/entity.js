@@ -82,14 +82,14 @@ Fortis.Entity = class {
         this.angle = new_angle;
         return this.angle;
     }
-    setAlpha(value,mode){//透明度を設定
-        if(value == null)return Fortis.error.ArgNotExists();
-        if(!Fortis.util.checkType(value,"number"))return Fortis.error.ArgTypeWrong();
-        if(!(value >= 0 && value <= 1))return Fortis.error.ArgIncorrectVarRange();
+    setAlpha(value, mode) {//透明度を設定
+        if (value == null) return Fortis.error.ArgNotExists();
+        if (!Fortis.util.checkType(value, "number")) return Fortis.error.ArgTypeWrong();
+        if (!(value >= 0 && value <= 1)) return Fortis.error.ArgIncorrectVarRange();
         this.alpha = value;
         return this.alpha;
     }
-    getAlpha(){//透明度を取得
+    getAlpha() {//透明度を取得
         return this.alpha;
     }
 }
@@ -175,5 +175,12 @@ Fortis.EntityContainer = class {
         this.ids[index_id] = this.ids[entity.id];
         this.ids[entity.id] = index;
         return this.entity;
+    }
+    setPos(vec) {//入っているエンティティの座標を相対的に変更する
+        if (vec == null) return Fortis.error.ArgNotExists();
+        if (!Fortis.util.checkType(vec, "object", "Vector2")) return Fortis.error.ArgTypeWrong();
+        for(let entity of this.entity){
+            entity.pos.add(vec);
+        }
     }
 }

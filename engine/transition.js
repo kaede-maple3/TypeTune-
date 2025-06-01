@@ -15,10 +15,10 @@ Fortis.TransitionManager = {
         //console.log(target[tVar])
         list["type"] = tVarType;
         if (tVarType == "number") {
-            list["difference"] = to - from;
+            list["difference"] = Fortis.util.cleanFloat(to - from,7);
             if (list["difference"] == 0) return false;
         } else if (tVarType == "object") {
-            list["difference"] = to.copy().sub(from);
+            list["difference"] = Fortis.util.cleanFloat(to.copy().sub(from),7);
             if (list["difference"].x == 0 && list["difference"].y == 0) return false;
         }
 
@@ -91,9 +91,9 @@ Fortis.TransitionManager = {
                         Fortis.TransitionManager.list[id]["now"] += delta * Fortis.TransitionManager.list[id]["difference"] / Fortis.TransitionManager.list[id]["time"];
                     } else {
                         if(Fortis.TransitionManager.list[id]["easing"]["arg"] == null){
-                            Fortis.TransitionManager.list[id]["now"] = Fortis.TransitionManager.list[id]["difference"] * Fortis.TransitionManager.list[id]["easing"]["func"](Fortis.TransitionManager.list[id]["elapsedRate"]);
+                            Fortis.TransitionManager.list[id]["now"] = Fortis.TransitionManager.list[id]["from"]+Fortis.TransitionManager.list[id]["difference"] * Fortis.TransitionManager.list[id]["easing"]["func"](Fortis.TransitionManager.list[id]["elapsedRate"]);
                         }else{
-                            Fortis.TransitionManager.list[id]["now"] = Fortis.TransitionManager.list[id]["difference"] * Fortis.TransitionManager.list[id]["easing"]["func"](Fortis.TransitionManager.list[id]["elapsedRate"],Fortis.TransitionManager.list[id]["easing"]["arg"]);
+                            Fortis.TransitionManager.list[id]["now"] = Fortis.TransitionManager.list[id]["from"]+Fortis.TransitionManager.list[id]["difference"] * Fortis.TransitionManager.list[id]["easing"]["func"](Fortis.TransitionManager.list[id]["elapsedRate"],Fortis.TransitionManager.list[id]["easing"]["arg"]);
                         }
                     }
 
@@ -123,7 +123,7 @@ Fortis.TransitionManager = {
                             variation = Fortis.TransitionManager.list[id]["difference"].copy().mul(Fortis.TransitionManager.list[id]["easing"]["func"](Fortis.TransitionManager.list[id]["elapsedRate"],Fortis.TransitionManager.list[id]["easing"]["arg"]));
                         }
                         
-                        Fortis.TransitionManager.list[id]["now"] = variation;
+                        Fortis.TransitionManager.list[id]["now"] = Fortis.TransitionManager.list[id]["from"].copy.add(variation);
                     }
                     Fortis.TransitionManager.list[id]["target"][Fortis.TransitionManager.list[id]["tVar"]] = Fortis.TransitionManager.list[id]["now"];
                     if (finish) Fortis.TransitionManager.list[id]["target"][Fortis.TransitionManager.list[id]["tVar"]] = Fortis.TransitionManager.list[id]["to"];
@@ -142,5 +142,8 @@ Fortis.TransitionManager = {
     },
     getID(){//IDを取得
         return Object.keys(this.list);
+    },
+    getList() {//取得
+        return this.list;
     },
 }

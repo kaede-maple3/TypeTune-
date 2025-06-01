@@ -306,13 +306,13 @@ Fortis.util.checkCircleAndLineCollide = function (l, c) {//lはlineの略。cは
     if (!Fortis.util.checkType(l, "object") || !Fortis.util.checkType(c, "object")) return Fortis.error.ArgTypeWrong();
     //https://yttm-work.jp/collision/collision_0006.html
     //これを使う
-    //console.log(l)
+    //console.log(c)
     let lSToC = c["pos"].copy().sub(l["start"]);
     let normLVec = l["direction"].copy().normalize();
     let minDis = Fortis.util.cleanFloat(lSToC.y * normLVec.x - lSToC.x * normLVec.y, 7);//円の中心と直線の最短距離
     //console.log(Math.abs(minDis))
     if (c["radius"].x >= Math.abs(minDis)) {//最短距離が円の半径未満
-
+        //console.log("aa")
         let lEToC = c["pos"].copy().sub(l["end"]);
         if (c["radius"].x >= lEToC.mag() || c["radius"].x >= lSToC.mag()) return true;
         let dot;
@@ -323,7 +323,6 @@ Fortis.util.checkCircleAndLineCollide = function (l, c) {//lはlineの略。cは
         }
         //console.log(dot/l["direction"].mag())
         return false
-        //if(dot/l.mag())
 
         /*
         let nLSToC = lSToC.copy().normalize();

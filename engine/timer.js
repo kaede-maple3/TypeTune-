@@ -46,6 +46,12 @@ Fortis.Timer = {
     getList() {//取得
         return this.list;
     },
+    get(id) {
+        if (id == null) return Fortis.error.ArgNotExists();
+        if (!Fortis.util.checkType(id, "string")) return Fortis.error.ArgTypeWrong();
+        if (this.list[id] === undefined) return false
+        return this.list[id];
+    },
     getID(){//IDを取得
         return Object.keys(this.list);
     },

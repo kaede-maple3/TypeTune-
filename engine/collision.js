@@ -94,8 +94,8 @@ Fortis.CollisionManager = {
                                         let c2Angle = c2n - c2n % 90;
                                         let c1Judge = false;
                                         let c2Judge = false;
-                                        if (c1Angle % 180 == 0) c1Judge = true;
-                                        if (c2Angle % 180 == 0) c2Judge = true;
+                                        if (c1Angle % 180 != 0) c1Judge = true;
+                                        if (c2Angle % 180 != 0) c2Judge = true;
                                         if (Fortis.util.checkRectsCollide(c1c.getInfo(c1.pos, c1.angle, c1.scale, c1Judge), c2c.getInfo(c2.pos, c2.angle, c2.scale, c2Judge))) {
                                             this.list[key]["result"] = true;
                                             judge = true;
@@ -210,7 +210,6 @@ Fortis.CollisionManager = {
                     break;
                 }
             }
-            return false;//衝突してない
         }
     }
 }

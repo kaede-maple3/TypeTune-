@@ -50,7 +50,7 @@ Fortis.Game.draw = function (delta) {
     function repeatIdentifyingEntity(camera, array, mode) {//arrayにlayerもしくはContainer、modeにtrueかfalse(containerならtrue)
         array.entity.forEach(tmpEntity => {
             let entity = tmpEntity;
-            if (entity.alpha !== undefined && entity.alpha != 0) {
+            if (entity.type != "CustomRenderFunction") {
                 camera.context.save();
                 if (mode) {
                     entity = tmpEntity["entity"];
@@ -59,8 +59,9 @@ Fortis.Game.draw = function (delta) {
                     camera.context.globalCompositeOperation = "source-over";
                 }
                 if (entity.type == "EntityContainer") {
-                    repeatIdentifyingEntity(entity, true);
+                    repeatIdentifyingEntity(camera,entity, true);
                 } else {
+                    if(entity.alpha!=0){
                     camera.context.globalAlpha = entity.alpha;
                     //console.log(length * Math.sin(Fortis.util.degreeToRadian(degree + array.camera.angle))+ array.camera.pos.x+array.camera.canvas.width/2)
                     //console.log(entity)
@@ -97,6 +98,7 @@ Fortis.Game.draw = function (delta) {
                             break
                     }
                     camera.context.restore();
+                }
                 }
             } else {
                 entity.func(delta);

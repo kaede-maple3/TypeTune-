@@ -37,7 +37,7 @@ Fortis.Game.fpsCtrl = {
             this.totalTime = this.nowTime - this.startTime;
             this.fpsAve = Math.floor(((this.fpsAve + this.fps) / 2) * 100) / 100;
             this.fpsCount = 0;
-            console.log(this.fps)
+            //console.log(this.fps)
         } else {
             this.fpsCount++;
         }

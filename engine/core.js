@@ -368,7 +368,6 @@ Fortis.Game = {
                     this.canvasCfg.size.x = winX;
                     this.canvasCfg.size.y = y;
                 } else {
-                    mousePos.shape.text = winY
                     this.canvasCfg.size.x = tmpx;
                     this.canvasCfg.size.y = winY;
                 }
@@ -397,7 +396,7 @@ Fortis.Game = {
             //layer.camera.canvas.height = this.canvasCfg.size.y;
         }
         //console.log("win:",this.winSize)
-        console.log("canvas:", this.canvasCfg.size)
+        //console.log("canvas:", this.canvasCfg.size)
         //mousePos.shape.text = "x:" + this.canvasCfg.size.x + ",y:" + this.canvasCfg.size.y
     },
     setScene(scene) {//シーン設定
