@@ -50,16 +50,16 @@ let nowScene;
 
 function Ready() {
     //タイトル
-    /*
+    
     nowScene = "title";
     title();
-    */
+    
 
     //曲セレクト
-    
+    /*
     nowScene = "select";
     selectReset();
-    
+    */
 
     //プレイ
     /*
