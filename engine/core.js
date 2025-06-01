@@ -443,7 +443,7 @@ Fortis.Game = {
 //キーを押した
 window.addEventListener("keydown", (e) => {
     Fortis.InputKey[e.code] = true;
-    console.log("down:", e.code)
+    //console.log("down:", e.code)
 });
 //キーが離された
 window.addEventListener("keyup", (e) => {

@@ -24,6 +24,18 @@ let startTimer;//曲開始までのタイマー
 let nStartTimer;//ノーツの計算の開始までのタイマー
 let nSTStartTime;//ノーツのタイマーが始まった時間
 
+let feverGauge;//フィーバーゲージ
+
+//終了時のあれこれ
+let alreadyFinished;//既にfinish関数を呼び出した
+let finishFadeId;//終了時のフェード
+let finishTimerId;//終了時のタイマー
+let fScore, fScoreFont;//最終的なスコア
+let fRank, fRankFont;//最終的なランク
+let pScore, pScoreFont;//素点
+let cScore, cScoreFont;//コンボ加算スコア
+let feScore, feScoreFont;//フィーバー加算スコア
+
 //プレイに関するデータ
 let nowSound;
 let nowNScore;//現在の譜面
@@ -31,6 +43,7 @@ let tPlaying;//曲が開始されているか
 let nPlaying;//ノーツの方が開始されているか
 let nowRank;//現在のランク
 let nowCombo;//現在のコンボ数
+let highCombo;
 let nowHBeats;//現在半拍数
 let nowNHBeats;//ノーツの現在半拍数
 let nowNTTime;//ノーツ側での時間時間
@@ -47,6 +60,7 @@ let notesReaction = {};//ノーツを押したタイミングによるリアク�
 let NRFont;//ノーツのリアクションのフォント
 let score;//ノーツの得点
 let nowScore;//現在の得点
+let fever;//現在のフィーバーゲージ
 
 
 function ResetToPlay() {
@@ -60,13 +74,15 @@ function ResetToPlay() {
     tPlaying = false;
     nowRank = "D";
     nowCombo = 0;
+    highCombo = 0;
     nowHBeats = 0;
     nowNHBeats = 0;
     nowNTTime = 0;
     nowTTTime = 0;
+    fever = 0;
     NDT = 1200;
     nSpeed = 1.2 * (Fortis.Game.canvasCfg.size.y / (NDT / 1000));
-    //console.log(nSpeed)
+    alreadyFinished = false;
     TPHB = Fortis.util.cleanFloat(60 * 1000 / tunesInfo[nowSTIndex]["BPM"] / 2, 5);
     score = {
         "normal": 300,
@@ -110,6 +126,7 @@ function ResetToPlay() {
 
     UILayer = pScene.getUI();
     for (let key in notesReaction) {
+        notesReaction[key].alpha = 0;
         UILayer.add(notesReaction[key]);
     }
 
@@ -162,6 +179,10 @@ function ResetToPlay() {
 
         pBGLayer.addEntities([NRR, NRRF, cPartition, lPartition, rPartition, judgeRect, laneDText, laneFText, laneJText, laneKText]);
 
+        feverGauge = new Fortis.Entity(new Fortis.RectShape(Fortis.Game.canvasCfg.size.x / 14, Fortis.Game.canvasCfg.size.y * 4 / 5, new Fortis.Vector2(0, -Fortis.Game.canvasCfg.size.y * 2 / 5)), new Fortis.ColorMaterial(new Fortis.Color("#1709BE")));
+        feverGauge.pos = new Fortis.Vector2(Fortis.Game.canvasCfg.size.x / 14, Fortis.Game.canvasCfg.size.y * 9 / 10);
+        FeverGaugeChange();
+
         FGFrame = new Fortis.Entity(new Fortis.RectShape(Fortis.Game.canvasCfg.size.x / 14, Fortis.Game.canvasCfg.size.y * 4 / 5), new Fortis.ColorMaterial(null, new Fortis.Color("#dbdbdb")));
         FGFrame.pos = new Fortis.Vector2(Fortis.Game.canvasCfg.size.x / 14, Fortis.Game.canvasCfg.size.y / 2);
         FGRect = new Fortis.Entity(new Fortis.RectShape(Fortis.Game.canvasCfg.size.x / 14, Fortis.Game.canvasCfg.size.y * 4 / 5), new Fortis.ColorMaterial(new Fortis.Color("#191919")));
@@ -211,7 +232,7 @@ function ResetToPlay() {
         }
         difficultyText.pos = new Fortis.Vector2(Fortis.Game.canvasCfg.size.x * 7 / 8, Fortis.Game.canvasCfg.size.y * 19 / 20);
 
-        pBGLayer.addEntities([FGRect, FGFrame, FGText, scoreText, tScoreText, tRankText, ComboText, tComboText, tuneNameText, difficultyText]);
+        pBGLayer.addEntities([FGRect, feverGauge, FGFrame, FGText, scoreText, tScoreText, tRankText, ComboText, tComboText, tuneNameText, difficultyText]);
     }
 
 
@@ -277,14 +298,16 @@ function pUpdate(delta) {
         nowHBeats = nowTTTime / TPHB;
         let nowBRTime = nowTTTime % TPHB;//あまり時間
 
-        /*
-        if (Fortis.Game.mouse.click) {
-            nowCombo++;
-            tComboText.shape.text = nowCombo;
-        }
-            */
-
         keyPush(delta, nowHBeats, nowBRTime);
+
+        if (nowSound.status && !alreadyFinished) {//曲終了
+            alreadyFinished = true;
+            //console.log("finish");
+            finishFadeId = Fortis.TransitionManager.add(fadeRect, "alpha", 2000, 0, 0.8, Fortis.util.easing.inPower, 2);
+            Fortis.TransitionManager.start(finishFadeId);
+            finishTimerId = Fortis.Timer.add(2200, false, finish);
+            Fortis.Timer.start(finishTimerId);
+        }
     }
 }
 
@@ -569,7 +592,6 @@ function keyPush(delta, nHB, nHBRT) {
             nowNotes["D"][judgeIndex][1] = true;
             nowCombo++;
             changeCombo(nowCombo);
-            console.log(difference)
             changeReactionAndScore("D", difference, nowNotes["D"][judgeIndex][2], 1);
         }
 
@@ -579,6 +601,9 @@ function keyPush(delta, nHB, nHBRT) {
     } else {
         if (nowNotes["D"][judgeIndex - 1] !== undefined) {
             if (nowNotes["D"][judgeIndex - 1][0].length == 1 && !nowNotes["D"][judgeIndex - 1][1]) {
+                fever--;
+                FeverGaugeChange();
+
                 nowCombo = 0;
                 changeCombo(nowCombo);
                 notesReaction["D"].shape.text = "Miss";
@@ -602,6 +627,9 @@ function keyPush(delta, nHB, nHBRT) {
     } else {
         if (nowNotes["F"][judgeIndex - 1] !== undefined) {
             if (nowNotes["F"][judgeIndex - 1][0].length == 1 && !nowNotes["F"][judgeIndex - 1][1]) {
+                fever--;
+                FeverGaugeChange();
+
                 nowCombo = 0;
                 changeCombo(nowCombo);
                 notesReaction["F"].shape.text = "Miss";
@@ -625,6 +653,9 @@ function keyPush(delta, nHB, nHBRT) {
     } else {
         if (nowNotes["J"][judgeIndex - 1] !== undefined) {
             if (nowNotes["J"][judgeIndex - 1][0].length == 1 && !nowNotes["J"][judgeIndex - 1][1]) {
+                fever--;
+                FeverGaugeChange();
+
                 nowCombo = 0;
                 changeCombo(nowCombo);
                 notesReaction["J"].shape.text = "Miss";
@@ -648,6 +679,9 @@ function keyPush(delta, nHB, nHBRT) {
     } else {
         if (nowNotes["K"][judgeIndex - 1] !== undefined) {
             if (nowNotes["K"][judgeIndex - 1][0].length == 1 && !nowNotes["K"][judgeIndex - 1][1]) {
+                fever--;
+                FeverGaugeChange();
+
                 nowCombo = 0;
                 changeCombo(nowCombo);
                 notesReaction["K"].shape.text = "Miss";
@@ -659,31 +693,88 @@ function keyPush(delta, nHB, nHBRT) {
 
 function changeCombo(combo) {
     tComboText.shape.text = combo;
+    highCombo = Math.max(highCombo, combo);
 }
 
 function changeReactionAndScore(key, difference, type, length) {
+    fever++;
+    FeverGaugeChange();
+
+    notesReaction[key].alpha = 0.5;
     let tmpScore = type ? score["special"] : score["normal"];//加算される得点
+    let combo = 1 + nowCombo / 250;
     if (difference <= 0.05) {//パーフェクト
         notesReaction[key].shape.text = "Perfect";
         notesReaction[key].material.fill = new Fortis.Color("#DEE019");
 
-        nowScore += tmpScore * 1.5 * length;
+        nowScore += tmpScore * 1.5 * length * combo;
     } else if (difference <= 0.15) {//グレート
         notesReaction[key].shape.text = "Great";
         notesReaction[key].material.fill = new Fortis.Color("#E0193A");
 
-        nowScore += tmpScore * 1.2 * length;
+        nowScore += tmpScore * 1.2 * length * combo;
     } else if (difference <= 0.3) {//グッド
         notesReaction[key].shape.text = "Good";
         notesReaction[key].material.fill = new Fortis.Color("#4AE019");
 
-        nowScore += tmpScore * length;
+        nowScore += tmpScore * length * combo;
     } else {//バッド
         notesReaction[key].shape.text = "Bad";
         notesReaction[key].material.fill = new Fortis.Color("#19D2E0");
 
-        nowScore += tmpScore * 0.9 * length;
+        nowScore += tmpScore * 0.9 * length * combo;
     }
 
-    tScoreText.shape.text = nowScore;
+    nowScore = Fortis.util.cleanFloat(nowScore, -2);
+
+    tScoreText.shape.text = nowScore.toString().padStart(7, '0');
+}
+
+function FeverGaugeChange() {
+    fever = Math.max(0, Math.min(fever, 100));
+    let rate = fever / 100;
+    feverGauge.shape.size.y = (Fortis.Game.canvasCfg.size.y * 4 / 5) * rate;
+
+    if (rate <= 0.2) {
+        feverGauge.material.fill = new Fortis.Color("#1709BE");
+    } else if (rate <= 0.5) {
+        feverGauge.material.fill = new Fortis.Color("#4AE019");
+    } else if (rate <= 0.8) {
+        feverGauge.material.fill = new Fortis.Color("#E0193A");
+    } else {
+        feverGauge.material.fill = new Fortis.Color("#DEE019");
+    }
+}
+
+function finish() {
+    let comboAdd = highCombo * 100;
+    let feverAdd = nowScore * (fever / 250);
+    let finallyScore = nowScore + comboAdd + feverAdd;
+
+    //最終スコア
+    fScoreFont = new Fortis.Font("Martian Mono", 60);
+    fScore = new Fortis.Entity(new Fortis.TextShape(fScoreFont, "合計："+finallyScore.toString().padStart(7, '0')), new Fortis.ColorMaterial(new Fortis.Color("white"))),
+        fScore.pos = new Fortis.Vector2(Fortis.Game.canvasCfg.size.x / 2, Fortis.Game.canvasCfg.size.y * 2 / 3);
+
+    //ランク
+    fRankFont = new Fortis.Font("Yusei Magic", 90);
+    fRank = new Fortis.Entity(new Fortis.TextShape(fRankFont, "D"), new Fortis.ColorMaterial(new Fortis.Color("white"))),
+        fRank.pos = new Fortis.Vector2(Fortis.Game.canvasCfg.size.x *9  / 10, Fortis.Game.canvasCfg.size.y * 2 / 3);
+
+    //素点
+    pScoreFont = new Fortis.Font("Martian Mono", 40);
+    pScore = new Fortis.Entity(new Fortis.TextShape(pScoreFont, "素点："+nowScore.toString().padStart(7, '0')), new Fortis.ColorMaterial(new Fortis.Color("white"))),
+    pScore.pos = new Fortis.Vector2(Fortis.Game.canvasCfg.size.x / 2, Fortis.Game.canvasCfg.size.y * 1 / 10);
+
+    //コンボ加算
+    pScoreFont = new Fortis.Font("Martian Mono", 40);
+    cScore = new Fortis.Entity(new Fortis.TextShape(pScoreFont, "最高コンボ加算："+comboAdd.toString().padStart(7, '0')), new Fortis.ColorMaterial(new Fortis.Color("white"))),
+    cScore.pos = new Fortis.Vector2(Fortis.Game.canvasCfg.size.x / 2, Fortis.Game.canvasCfg.size.y *3 / 10);
+
+    //フィーバー加算
+    pScoreFont = new Fortis.Font("Martian Mono", 40);
+    feScore = new Fortis.Entity(new Fortis.TextShape(pScoreFont, "フィーバー加算："+feverAdd.toString().padStart(7, '0')), new Fortis.ColorMaterial(new Fortis.Color("white"))),
+    feScore.pos = new Fortis.Vector2(Fortis.Game.canvasCfg.size.x / 2, Fortis.Game.canvasCfg.size.y * 5 / 10);
+
+    UILayer.addEntities([fScore,fRank,pScore,cScore,feScore])
 }

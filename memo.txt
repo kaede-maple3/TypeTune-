@@ -1,0 +1,34 @@
+スコアは7桁(99万9999まで)を予定
+コンボはフィーバー加速
+
+スペースキーで決定、qキーでキャンセル(戻る)
+左からDFJK
+ノーマルノーツは丸(cg,cb)
+ロングノーツは四角(sg,sb)
+        for (let i in nowNotes[key]) {
+            for (let entity of nowNotes[key][i]) {
+                entity.pos.y += nSpeed * delta / 1000;
+            }
+            if (nowNotes[key][i].length == 1) {
+                if (nowNotes[key][i][0].pos.y >= Fortis.Game.canvasCfg.size.y + nowNotes[key][i][0].shape.size.y) {
+                    /*
+                    nLayer.remove(nowNotes[key][i][0]);
+                    nowNotes[key][i] = null;
+                    */
+                   nowNotes[key][i][0].alpha = 0;
+                }
+            } else {
+                if (nowNotes[key][i][2].pos.y >= Fortis.Game.canvasCfg.size.y + nowNotes[key][i][2].shape.size.y) {
+                    /*
+                    nLayer.remove(nowNotes[key][i][0]);
+                    nLayer.remove(nowNotes[key][i][1]);
+                    nLayer.remove(nowNotes[key][i][2]);
+                    nowNotes[key][i] = null;
+                    */
+                   nowNotes[key][i][0].alpha = 0;
+                   nowNotes[key][i][1].alpha = 0;
+                   nowNotes[key][i][2].alpha = 0;
+                }
+            }
+
+        }

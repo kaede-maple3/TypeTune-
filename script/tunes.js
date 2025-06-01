@@ -39,7 +39,7 @@ let tunesInfo = [
             "normal": 0,
             "hard": 0,
         },
-    },
+    },/*
     {
         "data": "./tune/まだ",
         "score": "譜面のデータ(形は考え中)",
@@ -165,9 +165,9 @@ let tunesInfo = [
             "normal": 0,
             "hard": 0,
         },
-    },
+    },*/
     {
-        "data": "./tune/まだ",
+        "data": "forElise",
         "score": "譜面のデータ(形は考え中)",
         "name": "エリーゼのために",
         "font": "Rampart One",
