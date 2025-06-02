@@ -41,6 +41,9 @@ function Init() {
     Fortis.SoundLoader.addSimpleSounds({
         "sss": "./tune/sss.wav",
         "forElise": "./tune/forElise.wav",
+        "bh": "./tune/bh.wav",
+        "hal": "./tune/hal.wav",
+        "kimigayo": "./tune/kimigayo.wav",
     });
 
     Fortis.SoundLoader.addNormalSounds({
