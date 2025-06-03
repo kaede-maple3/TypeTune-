@@ -78,6 +78,20 @@ let tunesInfo = [
         "credit": "演奏：東京音楽隊",
         "scoreRate": [
             0, 60000, 130000, 210000, 320000, 450000
+        
+        ]
+    },
+    {
+        "data": "alps1",
+        "score": "譜面のデータ(形は考え中)",
+        "name": "アルプス一万尺",
+        "font": "Yuji Boku",
+        "time": 24000,
+        "BPM": 160,
+        "credit": "民謡・童謡",
+        "scoreRate": [
+            0, 60000, 130000, 210000, 320000, 450000
+        
         ]
     },
 
@@ -104,27 +118,7 @@ let tunesInfo = [
             "hard": 0,
         },
     },
-    {
-        "data": "./tune/まだ",
-        "score": "譜面のデータ(形は考え中)",
-        "name": "アルプス一万尺",
-        "font": "Yuji Boku",
-        "time": 6000,
-        "BPM": 100,
-        "credit": "民謡・童謡",
-        "scoreRate": {
-            "D": "Dランクのスコア",
-            "C": "Cランクのスコア",
-            "B": "B同上",
-            "A": "A同上",
-            "AA": "AA同上",
-            "S": "S同上",
-        },
-        "highScore": {
-            "normal": 0,
-            "hard": 0,
-        },
-    },
+    
     {
         "data": "./tune/まだ",
         "score": "譜面のデータ(形は考え中)",

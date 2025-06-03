@@ -44,6 +44,7 @@ function Init() {
         "bh": "./tune/bh.wav",
         "hal": "./tune/hal.wav",
         "kimigayo": "./tune/kimigayo.wav",
+        "alps1": "./tune/alps1.wav",
     });
 
     Fortis.SoundLoader.addNormalSounds({
