@@ -345,6 +345,7 @@ function changeDisplayedTune(index) {
 
     tuneTText.shape.text = "再生時間（秒）：" + tunesInfo[index]["time"] / 1000;
 
+    console.log(tunesInfo[index])
     tuneNScore.shape.text = highScoreData[tunesInfo[index]["data"]][0].toString().padStart(7, '0');//ノーマル
     tuneHScore.shape.text = highScoreData[tunesInfo[index]["data"]][1].toString().padStart(7, '0');//ハード
 

@@ -34,7 +34,10 @@ let tunesInfo = [
     },
     {
         "data": "bh",
-        "score": "譜面のデータ(形は考え中)",
+        "score": {
+            0:s1n,
+            1:s1h,
+        },
         "name": "Burning Heart",
         "font": "Rampart One",//仮
         "time": 113000,
@@ -45,20 +48,11 @@ let tunesInfo = [
         ]
     },
     {
-        "data": "hal",
-        "score": "譜面のデータ(形は考え中)",
-        "name": "ハルジオン",
-        "font": "Rampart One",//仮
-        "time": 88000,
-        "BPM": 152,
-        "credit": "作詞作曲：森田交一 ボーカル：KEI ベース＆ギター：森田交一,村上友太",
-        "scoreRate": [
-            0, 60000, 130000, 210000, 320000, 450000
-        ]
-    },
-    {
         "data": "forElise",
-        "score": "譜面のデータ(形は考え中)",
+        "score": {
+            0:s2h,
+            1:s2h,
+        },
         "name": "エリーゼのために",
         "font": "Rampart One",
         "time": 83000,
@@ -68,6 +62,24 @@ let tunesInfo = [
             0, 60000, 130000, 210000, 320000, 450000
         ]
     },
+    {
+        "data": "hal",
+        "score":{
+            0:s3h,
+            1:s3h,
+        },
+        "name": "ハルジオン",
+        "font": "Rampart One",//仮
+        "time": 88000,
+        "BPM": 152,
+        "credit": "作詞作曲：森田交一 ボーカル：KEI ベース＆ギター：森田交一,村上友太",
+        "scoreRate": [
+            0, 60000, 130000, 210000, 320000, 450000
+        ]
+    },
+    /*
+    
+    
     {
         "data": "kimigayo",
         "score": "譜面のデータ(形は考え中)",
@@ -94,6 +106,7 @@ let tunesInfo = [
         
         ]
     },
+    */
 
     /*
     

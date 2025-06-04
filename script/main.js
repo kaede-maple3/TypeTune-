@@ -68,7 +68,13 @@ function Ready() {
                 "sss":[
                     0,0
                 ],
+                "bh":[
+                    0,0
+                ],
                 "forElise":[
+                    0,0
+                ],
+                "hal":[
                     0,0
                 ],
             }

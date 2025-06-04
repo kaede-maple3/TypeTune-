@@ -786,8 +786,8 @@ function FeverGaugeChange() {
 function finish() {
     finished = true;
     let comboAdd = highCombo * 100;
-    let feverAdd = nowScore * (fever / 250);
-    let finalScore = Fortis.util.cleanFloat(nowScore + comboAdd + feverAdd);
+    let feverAdd = Fortis.util.cleanFloat(nowScore * (fever / 250));
+    let finalScore = nowScore + comboAdd + feverAdd;
 
     //ハイスコアかの判定
     if(highScoreData[tunesInfo[nowSTIndex]["data"]][nowSDifficulty]<finalScore){
