@@ -72,7 +72,7 @@ function ResetToPlay() {
 
     nowScore = 0;
     nowSound = new Fortis.SimpleSound(tunesInfo[nowSTIndex]["data"]);
-    nowSound.setVolume(0.4);
+    nowSound.setVolume(tunesInfo[nowSTIndex]["volume"]);
     nowNScore = JSON.parse(JSON.stringify(tunesInfo[nowSTIndex]["score"][nowSDifficulty]));;
     tPlaying = false;
     nowRank = "D";
@@ -313,6 +313,11 @@ function pUpdate(delta) {
 
         nowHBeats = nowTTTime / TPHB;
         let nowBRTime = nowTTTime % TPHB;//あまり時間
+
+        //console.log(Fortis.util.cleanFloat(nowHBeats,1))
+        if(Fortis.util.cleanFloat(nowHBeats,1)%1 == 0){
+            console.log(Fortis.util.cleanFloat(nowHBeats,3))
+        }
 
         keyPush(delta, nowHBeats, nowBRTime);
 
@@ -627,6 +632,7 @@ function keyPush(delta, nHB, nHBRT) {
             nowNotes["D"][judgeIndex][1] = true;
             nowCombo++;
             changeCombo(nowCombo);
+            console.log(nHB);
             changeReactionAndScore("D", difference, nowNotes["D"][judgeIndex][2], 1);
         }
 
@@ -652,7 +658,7 @@ function keyPush(delta, nHB, nHBRT) {
             nowNotes["F"][judgeIndex][1] = true;
             nowCombo++;
             changeCombo(nowCombo);
-
+console.log(nHB);
             changeReactionAndScore("F", difference, nowNotes["F"][judgeIndex][2], 1);
         }
 
@@ -678,7 +684,7 @@ function keyPush(delta, nHB, nHBRT) {
             nowNotes["J"][judgeIndex][1] = true;
             nowCombo++;
             changeCombo(nowCombo);
-
+console.log(nHB);
             changeReactionAndScore("J", difference, nowNotes["J"][judgeIndex][2], 1);
         }
 
@@ -704,7 +710,7 @@ function keyPush(delta, nHB, nHBRT) {
             nowNotes["K"][judgeIndex][1] = true;
             nowCombo++;
             changeCombo(nowCombo);
-
+console.log(nHB);
             changeReactionAndScore("K", difference, nowNotes["K"][judgeIndex][2], 1);
         }
 
