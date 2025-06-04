@@ -77,6 +77,12 @@ function Ready() {
                 "hal":[
                     0,0
                 ],
+                "kimigayo":[
+                    0,0
+                ],
+                "alps1":[
+                    0,0
+                ],
             }
             window.localStorage.setItem("highScore",JSON.stringify(highScoreData));
         }else{

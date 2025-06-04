@@ -312,18 +312,18 @@ function sUpdate(delta) {
 
             if (Fortis.InputKey["ArrowRight"] && !arrowLOrRFP) {//曲セレクトを一個前にもどす
                 arrowLOrRFP = true;
-                nowSTIndex--;
-                if (nowSTIndex < 0) {
-                    nowSTIndex = tunesInfo.length - 1;
+                nowSTIndex++;
+                if (nowSTIndex > tunesInfo.length - 1) {
+                    nowSTIndex = 0;
                 }
                 changeDisplayedTune(nowSTIndex);
             }
 
             if (Fortis.InputKey["ArrowLeft"] && !arrowLOrRFP) {//曲セレクトを一個後にする
                 arrowLOrRFP = true;
-                nowSTIndex++;
-                if (nowSTIndex > tunesInfo.length - 1) {
-                    nowSTIndex = 0;
+                nowSTIndex--;
+                if (nowSTIndex < 0) {
+                    nowSTIndex = tunesInfo.length - 1;
                 }
                 changeDisplayedTune(nowSTIndex);
             }
