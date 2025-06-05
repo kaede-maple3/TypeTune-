@@ -31,7 +31,6 @@ let tunesInfo = [
         "scoreRate": [
             0, 60000, 130000, 210000, 320000, 450000
         ],
-        "volume":0.4,
     },
     {
         "data": "bh",
@@ -46,13 +45,12 @@ let tunesInfo = [
         "credit": "作詞作曲：森田交一 ボーカル：KEI ベース＆ギター：森田交一",
         "scoreRate": [
             0, 60000, 130000, 210000, 320000, 450000
-        ],
-        "volume":0.4,
+        ]
     },
     {
         "data": "forElise",
         "score": {
-            0:s2h,
+            0:s2n,
             1:s2h,
         },
         "name": "エリーゼのために",
@@ -62,13 +60,12 @@ let tunesInfo = [
         "credit": "作曲：ベートーベン",
         "scoreRate": [
             0, 60000, 130000, 210000, 320000, 450000
-        ],
-        "volume":0.4,
+        ]
     },
     {
         "data": "hal",
         "score":{
-            0:s3h,
+            0:s3n,
             1:s3h,
         },
         "name": "ハルジオン",
@@ -78,30 +75,28 @@ let tunesInfo = [
         "credit": "作詞作曲：森田交一 ボーカル：KEI ベース＆ギター：森田交一,村上友太",
         "scoreRate": [
             0, 60000, 130000, 210000, 320000, 450000
-        ],
-        "volume":0.4,
+        ]
     },
     {
         "data": "kimigayo",
         "score":{
-            0:s4h,
+            0:s4n,
             1:s4h,
         },
         "name": "君が代",
         "font": "Yuji Mai",
         "time": 56000,
-        "BPM": 60,
+        "BPM": 120,
         "credit": "日本国国家",
         "scoreRate": [
             0, 60000, 130000, 210000, 320000, 450000
         
-        ],
-        "volume":0.55,
+        ]
     },
     {
         "data": "alps1",
         "score":{
-            0:s5h,
+            0:s5n,
             1:s5h,
         },
         "name": "アルプス一万尺",
@@ -112,8 +107,7 @@ let tunesInfo = [
         "scoreRate": [
             0, 60000, 130000, 210000, 320000, 450000
         
-        ],
-        "volume":0.6,
+        ]
     },
     /*
     
